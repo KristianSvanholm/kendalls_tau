@@ -17,7 +17,7 @@ fn main() {
             let a = keys[n];
             let b = keys[m];
             let tau = kendall(collect[a].clone(), collect[b].clone());
-            println!("{:7} - {:7} | Tau: {}", a,b,tau);
+            println!("{:7} - {:7} | Tau: {:.3}", a,b,tau);
         }
     }
 
