@@ -1,14 +1,28 @@
 use std::cmp::Ordering;
+use std::fs;
 use std::collections::HashMap;
 
 fn main() {
-    
+
+    let chips = ["i78700", "n150", "epyc1", "epyc2", "m1pro", "m2pro", "m3max"];
+
     let mut collect = HashMap::new();
-    collect.insert("n150", vec!["c", "rust", "java", "csharp", "lisp", "go", "fsharp", "fortran", "javascript", "racket", "typescript", "erlang", "php", "python", "perl", "lua", "jruby"]);
-    collect.insert("i78700", vec!["c", "rust", "java", "lisp", "csharp", "go", "fsharp", "fortran", "javascript", "racket", "typescript", "erlang", "php", "lua", "python", "perl", "jruby"]);
-    collect.insert("epyc #1", vec!["rust", "c", "java", "csharp", "fsharp", "lisp", "go", "fortran", "racket", "javascript", "erlang", "typescript", "php", "python", "jruby", "perl", "lua"]);
-    collect.insert("epyc #2", vec!["rust", "c", "java", "csharp", "fsharp", "lisp", "go", "fortran", "racket", "javascript", "erlang", "php", "typescript", "python", "jruby", "perl", "lua"]);
-    collect.insert("m2pro", vec!["c", "java", "fortran", "fsharp", "lisp", "rust", "csharp", "go", "javascript", "racket", "typescript", "jruby", "erlang", "php", "lua", "python", "perl"]);
+    for chip in chips {
+        let ranks: Vec<String> = fs::read_to_string(format!("data/{}/ranks.txt",chip))
+            .expect("Should be able to read this file")
+            .split("\n")
+            .skip(1) // Skip title
+            .filter(|p| !p.is_empty())
+            .map(|entry| 
+                entry.split(" ")
+                    .filter(|p| !p.is_empty())
+                    .collect::<Vec<_>>()[1]
+                    .to_string()
+            )
+            .collect();
+
+        collect.insert(chip, ranks);
+    }
 
     let keys: Vec<&str>= collect.keys().cloned().collect();
 
@@ -22,7 +36,6 @@ fn main() {
     }
 
 }
-
 
 fn kendall<T: PartialEq>(a: Vec<T>, b: Vec<T> ) -> f32 {
     let mut ix = vec![];
